@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deprem-alarmi"
+version = "0.1.0"
+description = "Deprem verilerini izleyip eşik değerine göre alarm veren Python uygulaması"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+keywords = ["earthquake", "deprem", "alarm", "api", "acil durum", "emergency"]
+authors = [
+    {name = "yok1rai"}
+]
+dependencies = [
+    "requests"
+]
+
+[project.urls]
+Homepage = "https://github.com/yok1rai/DepremAlarmi"
+Issues = "https://github.com/yok1rai/DepremAlarmi/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "black"
+]
+
+[project.scripts]
+deprem-alarmi = "deprem_alarmi.main:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
