@@ -26,17 +26,19 @@ Deprem alarmı/
 ├── assets/
 │   └── sounds/
 │       └── anons.wav
+├── data/
+│   └── earthquakes.db       # Çalışma sırasında oluşur (git'e girmez)
 ├── src/
 │   └── deprem_alarmi/
-│       ├── fetcher.py
-│       ├── processor.py
-│       ├── main.py
+│       ├── fetcher.py       # Global deprem API kaynağı
+│       ├── processor.py     # Veri işleme / filtreleme
+│       ├── main.py          # Uygulama orkestrasyonu
 │       ├── alarm/
-│       │   ├── alarm.py
-│       │   ├── rules.py
-│       │   └── sound.py
-│       └── storage/ (kullanılmıyor)
-│           └── sqlite.py
+│       │   ├── alarm.py     # Alarm davranışı
+│       │   ├── rules.py     # Eşik kuralları
+│       │   └── sound.py     # Ses işlemleri
+│       └── storage/
+│           └── sqlite.py    # Lokal SQLite kayıt katmanı
 ├── .gitignore
 ├── LICENSE
 ├── pyproject.toml
@@ -76,16 +78,20 @@ python -m deprem_alarmi.main
 
 ## 🔁 Çalışma mantığı
 
-1. Deprem verilerini çeker
-2. Deprem verilerini filtreler
-3. Deprem eşik değerini aşıyorsa, alarmı **3 kez** sesli uyarı olarak çalıştırır
-4. Bu işlemleri `main.py` dosyasında birleştirir
+1. Global deprem API’sinden canlı veri çeker
+2. En güncel deprem verisini işler
+3. Deprem SQLite veritabanında yoksa:
+    - Kaydeder
+    - Eşik değerini kontrol eder
+    - Alarmı 3 kez sesli uyarı olarak çalıştırır
+4. Aynı deprem tekrar geldiğinde alarm verilmez
 
 
 ## 🛎️ Alarm mantığı
 
 - Alarm **tek seferlik bir olaydır**, sürekli çalmaz
 - Şarta bağlı, **deprem ID bazlı** kontrol mekanizması kullanır
+- Geçmiş kayıtlar **SQLite’ta** tutulur
 
 > Alarm sesi varsayılan olarak **3 tekrar** olacak şekilde ayarlanmıştır.
 > Bu davranış `alarm/alarm.py` üzerinden değiştirilebilir.
@@ -102,6 +108,18 @@ Bu sayede:
 
 - Alarm spam yapmaz
 - Aynı depremde tekrar tekrar çalmaz
+
+## 🗄️ Veritabanı (SQLite)
+
+- Veriler çalışma sırasında `data/earthquakes.db` dosyasına yazılır
+- Bu dosya **yereldir** ve **GitHub repository’sine dahil edilmez**
+- Her kullanıcıda veritabanı ayrı tutulur
+
+SQLite yalnızca:
+- Deprem geçmişini tutmak
+- Aynı deprem için tekrar alarm verilmesini önlemek
+
+amacıyla kullanılır.
 
 ## 🔧 Eşik değeri
 
