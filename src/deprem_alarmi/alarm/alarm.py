@@ -1,23 +1,19 @@
-from alarm.sound import play, stop
+from alarm.sound import play
 from alarm.rules import should_alarm
 
-_alarm_active = False
+_last_quake_id = None
 
 def handle(quake):
-    global _alarm_active
+    global _last_quake_id
 
     if not quake:
-        if _alarm_active:
-            stop("alarm")
-            _alarm_active = False
+        return
+
+    # Aynı deprem için tekrar alarm verme
+    if quake["id"] == _last_quake_id:
         return
 
     if should_alarm(quake):
-        if not _alarm_active:
-            play("alarm", loop=True)
-            _alarm_active = True
-
-    else:
-        if _alarm_active:
-            stop("alarm")
-            _alarm_active = False
+        # 3 kez çal -> loops=2
+        play("alarm", volume=1.0, force=True, loops=2)
+        _last_quake_id = quake["id"]
