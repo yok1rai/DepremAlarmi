@@ -14,7 +14,8 @@ authors = [
     {name = "yok1rai"}
 ]
 dependencies = [
-    "requests"
+    "requests",
+    "pygame"
 ]
 
 [project.urls]

@@ -12,6 +12,9 @@ PARAMS = {
 }
 
 def fetch_earthquakes():
-    r = requests.get(USGS_URL, params=PARAMS, timeout=10)
-    r.raise_for_status()
-    return r.json()
+    try:
+        r = requests.get(USGS_URL, params=PARAMS, timeout=10)
+        r.raise_for_status()
+        return r.json()
+    except requests.RequestException:
+        return None

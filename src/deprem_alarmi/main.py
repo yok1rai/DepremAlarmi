@@ -7,44 +7,49 @@ from alarm.alarm import handle
 from alarm.sound import load
 from storage.sqlite import init_db, save_quake, quake_exists
 
-# --- DB ---
-init_db()
 
-# --- ses ---
+def main():
+    # --- DB ---
+    init_db()
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-sound_path = BASE_DIR / "assets" / "sounds" / "anons.wav"
-load("alarm", sound_path, channel_id=0)
+    # --- ses ---
 
-# --- olay ---
+    BASE_DIR = Path(__file__).resolve().parents[2]
+    sound_path = BASE_DIR / "assets" / "sounds" / "anons.wav"
 
-print("Deprem alarmı başlatıldı..\n")
+    load("alarm", sound_path, channel_id=0)
 
-while True:
-    raw = fetch_earthquakes()
-    quake = parse_latest_quake(raw)
+    # --- olay ---
 
-    if not quake:
-        print("Deprem verisi alınamadı")
+    print("Deprem alarmı başlatıldı..\n")
+
+    while True:
+        raw = fetch_earthquakes()
+        quake = parse_latest_quake(raw)
+
+        if not quake:
+            print("Deprem verisi alınamadı")
+            sl(5)
+            continue
+
+        if not quake_exists(quake["id"]):
+            print(
+                "Yeni deprem",
+                quake["place"],
+                quake["magnitude"]
+            )
+
+            save_quake(quake)
+            handle(quake)
+
+        else:
+            print(
+                "Aynı deprem",
+                quake["place"],
+                quake["magnitude"]
+            )
+
         sl(5)
-        continue
 
-    if not quake_exists(quake["id"]):
-        print(
-            "Yeni deprem",
-            quake["place"],
-            quake["magnitude"]
-        )
-
-        save_quake(quake)
-        handle(quake)
-
-    else:
-        print(
-            "Aynı deprem",
-            quake["place"],
-            quake["magnitude"]
-        )
-
-    sl(5)
-
+if __name__ == "__main__":
+    main()
