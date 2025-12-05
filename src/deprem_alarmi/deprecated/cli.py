@@ -1,3 +1,5 @@
+# Hatalı olabilir artık çalışmıyor
+
 from pathlib import Path
 from time import sleep as sl
 
