@@ -28,7 +28,6 @@ Deprem alarmı/
 │       └── anons.wav
 ├── src/
 │   └── deprem_alarmi/
-│       ├── config.py
 │       ├── fetcher.py
 │       ├── processor.py
 │       ├── main.py
