@@ -1,10 +1,14 @@
+from pathlib import Path
 from fetcher import fetch_earthquakes
 from processor import parse_latest_quake
 from alarm.alarm import handle
 from alarm.sound import load
 from time import sleep as sl
 
-load("alarm", r"assets\sounds\anons.wav", channel_id=0)
+BASE_DIR = Path(__file__).resolve().parents[2]
+sound_path = BASE_DIR / "assets" / "sounds" / "anons.wav"
+
+load("alarm", sound_path, channel_id=0)
 
 last_quake_id = None
 
