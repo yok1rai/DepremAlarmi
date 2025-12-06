@@ -1,5 +1,5 @@
-from alarm.sound import play
-from alarm.rules import should_alarm
+from deprem_alarmi.alarm.sound import play
+from deprem_alarmi.alarm.rules import should_alarm
 
 _last_quake_id = None
 

@@ -1,10 +1,10 @@
 from pathlib import Path
 
-from fetcher import fetch_earthquakes
-from processor import parse_latest_quake
-from alarm.alarm import handle
-from alarm.sound import load, stop
-from storage.sqlite import init_db, save_quake, quake_exists
+from deprem_alarmi.fetcher import fetch_earthquakes
+from deprem_alarmi.processor import parse_latest_quake
+from deprem_alarmi.alarm.alarm import handle
+from deprem_alarmi.alarm.sound import load, stop
+from deprem_alarmi.storage.sqlite import init_db, save_quake, quake_exists
 import tkinter as tk
 
 def main():

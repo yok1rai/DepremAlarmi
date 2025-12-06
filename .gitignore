@@ -8,3 +8,6 @@ data/*
 
 test/
 test/**
+
+deprem_alarmi.egg-info
+deprem_alarmi.egg-info/**
