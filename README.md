@@ -1,7 +1,7 @@
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 ![Status](https://img.shields.io/badge/Status-Active-success)
-![Interface](https://img.shields.io/badge/Interface-CLI-lightgrey)
+![Interface](https://img.shields.io/badge/Interface-GUI-lightgrey)
 [![Author](https://img.shields.io/badge/Author-yok1rai-brown?logo=github)](https://github.com/yok1rai)
 
 # 🚨 Deprem alarmı
