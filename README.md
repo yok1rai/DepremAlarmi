@@ -1,153 +1,170 @@
+# 🚨 Deprem Alarmı
+
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 ![Status](https://img.shields.io/badge/Status-Active-success)
 ![Interface](https://img.shields.io/badge/Interface-GUI-lightgrey)
 [![Author](https://img.shields.io/badge/Author-yok1rai-brown?logo=github)](https://github.com/yok1rai)
 
-# 🚨 Deprem alarmı
+**Deprem Alarmı**, Türkiye ve çevresindeki depremleri **USGS üzerinden gerçek zamanlı olarak izleyen**, belirlenen büyüklük eşiğinin üzerindeki **yeni depremler için otomatik sesli alarm veren**, Python tabanlı **masaüstü (GUI) deprem alarm uygulamasıdır**.
 
-Türkiye ve çevresindeki depremleri **gerçek zamanlı olarak takip eden**, belirlenen şiddet eşiğinin üzerindeki depremleri **otomatik sesli alarm veren** Python tabanlı bir **CLI deprem alarm sistemidir**.
+Uygulama, **alarm spam’ini engelleyen durum temelli bir mantık**, **SQLite destekli geçmiş kaydı** ve **stabil ses sistemi** ile çalışır.
 
 ---
 
 ## ✨ Özellikler
 
-- 📡 Canlı deprem verisi çekme
-- 🧠 Akıllı alarm mantığı (durum temelli)
-- 🔔 Alarm tetiklendiğinde **3 kez sesli uyarı**
-- 🚫 Aynı deprem için tekrar alarm verilmez
-- 🧩 Modüler yapı
-- `pygame.mixer` tabanlı stabil ses sistemi
+- 📡 USGS Earthquake API’den canlı veri çekme  
+- 🖥️ **Tkinter tabanlı GUI (masaüstü uygulaması)**  
+- 🔔 Eşik aşımı durumunda **3 kez sesli alarm**
+- 🚫 Aynı deprem için tekrar alarm çalmaz
+- 🧠 Deprem ID bazlı durum kontrolü
+- 🗄️ SQLite ile lokal deprem geçmişi
+- 🔊 `pygame.mixer` ile stabil ses oynatma
+- 🧩 Modüler ve genişletilebilir mimari
 
-## 📂 Proje yapısı
+---
+
+## 🖼️ Arayüz Genel Bakış
+
+GUI aşağıdaki bileşenleri içerir:
+
+- **Başlat / Durdur** kontrol paneli
+- Alarm eşiği (büyüklük) giriş alanı
+- Canlı olarak güncellenen:
+  - Konum listesi
+  - Büyüklük listesi
+  - Durum mesajları
+  - Alarm durumu
+
+Veriler **5 saniyede bir** otomatik olarak güncellenir.
+
+---
+
+## 📂 Proje Yapısı
 
 ```text
-Deprem alarmı/
+DepremAlarmi/
 ├── assets/
 │   └── sounds/
 │       └── anons.wav
 ├── data/
-│   └── earthquakes.db       # Çalışma sırasında oluşur (git'e girmez)
+│   └── earthquakes.db        # Çalışma sırasında oluşur
+├── deprecated/
+│   └── cli.py                # ❌ Artık kullanılmıyor (deprecated)
 ├── src/
 │   └── deprem_alarmi/
-│       ├── fetcher.py       # Global deprem API kaynağı
-│       ├── processor.py     # Veri işleme / filtreleme
-│       ├── main.py          # Uygulama orkestrasyonu
+│       ├── main.py           # Tkinter GUI + uygulama döngüsü
+│       ├── fetcher.py        # USGS API veri çekme
+│       ├── processor.py     # En güncel depremi ayrıştırma
 │       ├── alarm/
-│       │   ├── alarm.py     # Alarm davranışı
+│       │   ├── alarm.py     # Alarm kontrol mantığı
 │       │   ├── rules.py     # Eşik kuralları
-│       │   └── sound.py     # Ses işlemleri
+│       │   └── sound.py     # Pygame ses sistemi
 │       └── storage/
-│           └── sqlite.py    # Lokal SQLite kayıt katmanı
+│           └── sqlite.py    # SQLite veri katmanı
 ├── .gitignore
 ├── LICENSE
 ├── pyproject.toml
 └── README.md
 ```
 
+---
+
+## ⚠️ CLI Durumu (Deprecated)
+
+Bu projede daha önce **CLI tabanlı** bir sürüm bulunmaktaydı:
+
+```text
+deprecated/cli.py
+```
+
+- ❌ **Artık aktif olarak kullanılmıyor**
+- ❌ GUI sürümüyle aynı davranışı garanti etmez
+- ❌ Gelecekte tamamen kaldırılabilir
+
+CLI dosyası **referans / arşiv** amacıyla tutulmaktadır.  
+Güncel ve desteklenen arayüz **GUI (Tkinter)** sürümüdür.
+
+---
+
 ## ⚙️ Kurulum
 
-> Python **3.10 veya üzeri** gereklidir
-
-### 1 — Depoyu klonla
+> **Python 3.10 veya üzeri gereklidir**
 
 ```bash
 git clone https://github.com/yok1rai/DepremAlarmi.git
 cd DepremAlarmi
-```
-
-### 2 — Gerekli paketleri yükle
-
-#### Kullanıcılar için
-
-```bash
 pip install .
 ```
 
-#### Geliştiriciler için
+---
 
-```bash
-pip install -e .
-```
-
-### 3 — Çalıştırma
+## ▶️ Çalıştırma
 
 ```bash
 python -m deprem_alarmi.main
 ```
 
-## 🔁 Çalışma mantığı
+Uygulama açıldığında:
 
-1. Global deprem API’sinden canlı veri çeker
-2. En güncel deprem verisini işler
-3. Deprem SQLite veritabanında yoksa:
-    - Kaydeder
-    - Eşik değerini kontrol eder
-    - Alarmı 3 kez sesli uyarı olarak çalıştırır
-4. Aynı deprem tekrar geldiğinde alarm verilmez
+1. Alarm eşiğini gir (örn. `4.0`)
+2. **Başlat** butonuna bas
+3. Sistem otomatik olarak izlemeye başlar
 
+---
 
-## 🛎️ Alarm mantığı
+## 🔁 Çalışma Mantığı
 
-- Alarm **tek seferlik bir olaydır**, sürekli çalmaz
-- Şarta bağlı, **deprem ID bazlı** kontrol mekanizması kullanır
-- Geçmiş kayıtlar **SQLite’ta** tutulur
+1. USGS API’den bölgesel deprem verisi çekilir  
+2. En güncel deprem seçilir  
+3. Deprem daha önce kaydedilmemişse:
+   - SQLite veritabanına eklenir  
+   - Büyüklük eşiği kontrol edilir  
+4. Şartlar sağlanıyorsa alarm **3 kez çalar**  
+5. Aynı deprem tekrar alarm üretmez  
 
-> Alarm sesi varsayılan olarak **3 tekrar** olacak şekilde ayarlanmıştır.
-> Bu davranış `alarm/alarm.py` üzerinden değiştirilebilir.
+Sorgulama aralığı: **5 saniye**
 
-
-|Durum|Alarm Davranışı|
-|:--|:---|
-|Yeni deprem ≥ eşik|🔔 3 kez çalar|
-|Yeni deprem < eşik|❌ Alarm yok|
-|Aynı deprem ID|🔇 Tekrar çalmaz|
-|Veri yok|❌ Alarm yok|
-
-Bu sayede:
-
-- Alarm spam yapmaz
-- Aynı depremde tekrar tekrar çalmaz
+---
 
 ## 🗄️ Veritabanı (SQLite)
 
-- Veriler çalışma sırasında `data/earthquakes.db` dosyasına yazılır
-- Bu dosya **yereldir** ve **GitHub repository’sine dahil edilmez**
-- Her kullanıcıda veritabanı ayrı tutulur
+- Dosya yolu: `data/earthquakes.db`
+- Lokal olarak oluşturulur
+- GitHub repository’sine dahil edilmez
 
-SQLite yalnızca:
+Amaç:
 - Deprem geçmişini tutmak
-- Aynı deprem için tekrar alarm verilmesini önlemek
+- Aynı deprem için tekrar alarm çalmasını önlemek
 
-amacıyla kullanılır.
+---
 
-## 🔧 Eşik değeri
-
-Varsayılan alarm eşiği:
-
-```text
-4.5
-```
-
-Değiştirmek için `alarm/rules.py`'deki `def should_alarm(quake, threshold=4.5):`'un **threshold** değerini değiştirebilirsiniz
-
-## 🧠 Kullanılan teknolojiler
+## 🧠 Kullanılan Teknolojiler
 
 - Python 3.10+
+- Tkinter (GUI)
 - pygame.mixer (ses sistemi)
-- CLI tabanlı yapı
-- Modüler mimari
+- SQLite
+- USGS Earthquake API
+
+---
 
 ## 📜 Lisans
 
-Bu proje Apache License 2.0 ile lisanslanmıştır.
-Detaylar için: LICENSE
+Bu proje **Apache License 2.0** ile lisanslanmıştır.  
+Detaylar için `LICENSE` dosyasına bakınız.
+
+---
 
 ## 👤 Yazar
 
-[yok1rai](https://github.com/yok1rai) tarafından yapılmıştır
+**yok1rai**  
+GitHub: https://github.com/yok1rai
 
-## ℹ️ Dipnot
+---
 
-*Bu proje eğitim, test ve kişisel kullanım amaçlıdır.* <br>
-*Resmî afet kurumlarının yerine geçmez*
+## ⚠️ Yasal Uyarı
+
+Bu proje **eğitim, deney ve kişisel kullanım** amaçlıdır.  
+**Resmî afet uyarı sistemlerinin yerine geçmez.**

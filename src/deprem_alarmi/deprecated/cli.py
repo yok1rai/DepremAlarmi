@@ -3,11 +3,11 @@
 from pathlib import Path
 from time import sleep as sl
 
-from fetcher import fetch_earthquakes
-from processor import parse_latest_quake
-from alarm.alarm import handle
-from alarm.sound import load
-from storage.sqlite import init_db, save_quake, quake_exists
+from deprem_alarmi.fetcher import fetch_earthquakes
+from deprem_alarmi.processor import parse_latest_quake
+from deprem_alarmi.alarm.alarm import handle
+from deprem_alarmi.alarm.sound import load
+from deprem_alarmi.storage.sqlite import init_db, save_quake, quake_exists
 
 
 def main():
